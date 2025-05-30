@@ -1,10 +1,13 @@
+<script setup>
+import Footer from "~/components/layout/Footer.vue";
+import Header from "~/components/layout/Header.vue";
+</script>
 <template>
-  <div>
-    <h2>default layout</h2>
+  <Header />
+  <main>
     <slot />
-  </div>
+  </main>
+  <Footer />
 </template>
-
-<script setup></script>
 
 <style scoped></style>

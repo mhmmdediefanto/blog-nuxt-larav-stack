@@ -1,8 +1,5 @@
 <template>
-  <div>
-    <h1>halaman admin</h1>
-    <slot />
-  </div>
+  <slot />
 </template>
 
 <script setup></script>
