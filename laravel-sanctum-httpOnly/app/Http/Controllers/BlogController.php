@@ -35,7 +35,7 @@ class BlogController extends Controller
             'title' => 'required|string|max:255',
             'category_blog_id' => 'required|exists:category_blogs,id',
             'content' => 'required|string',
-            'image' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ]);
 
 
@@ -52,7 +52,7 @@ class BlogController extends Controller
                 'user_id' => Auth::user()->id,
                 'category_blog_id' => $validatedData['category_blog_id'],
                 'slug' => Str::slug($validatedData['title'], '-'),
-                'excerpt' => substr($validatedData['content'], 0, 100),
+                'excerpt' => Str::limit(strip_tags($validatedData['content']), 100),
                 'content' => $validatedData['content'],
                 'image' => $validatedData['image'],
             ]);
@@ -109,7 +109,7 @@ class BlogController extends Controller
             'title' => 'required|string|max:255',
             'category_blog_id' => 'required|exists:category_blogs,id',
             'content' => 'required|string',
-            'image' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ];
 
 
@@ -140,7 +140,7 @@ class BlogController extends Controller
             'title' => $validatedData['title'],
             'slug' => Str::slug($validatedData['title'], '-'),
             'category_blog_id' => $validatedData['category_blog_id'],
-            'excerpt' => substr($validatedData['content'], 0, 100),
+            'excerpt' => Str::limit(strip_tags($validatedData['content']), 100),
             'content' => $validatedData['content'],
         ];
 

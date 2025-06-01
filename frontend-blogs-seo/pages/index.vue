@@ -23,7 +23,9 @@
           <UIcon name="mingcute:book-fill"  /></NuxtLink>
         </UButton>
         <UButton class="cursor-pointer flex items-center">
-          Daftarkan Diri Anda <UIcon name="i-heroicons-arrow-right" />
+         <NuxtLink :to="`/auth/register`">
+           Daftarkan Diri Anda <UIcon name="i-heroicons-arrow-right" />
+         </NuxtLink>
         </UButton>
       </div>
     </ContainerPage>
