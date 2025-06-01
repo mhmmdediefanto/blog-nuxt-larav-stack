@@ -18,9 +18,9 @@
         konten informatif, dan wawasan dari berbagai bidang.
       </p>
       <div class="flex justify-center items-center gap-3 mt-4">
-        <UButton class="flex items-center cursor-pointer">
-          Mulai Membaca
-          <UIcon name="mingcute:book-fill"  />
+        <UButton class="flex items-center cursor-pointer bg-primary ">
+          <NuxtLink :to="`/blog`" class="flex items-center">Mulai Membaca
+          <UIcon name="mingcute:book-fill"  /></NuxtLink>
         </UButton>
         <UButton class="cursor-pointer flex items-center">
           Daftarkan Diri Anda <UIcon name="i-heroicons-arrow-right" />

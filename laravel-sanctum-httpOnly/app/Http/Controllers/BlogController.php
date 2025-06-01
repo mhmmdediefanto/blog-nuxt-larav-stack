@@ -13,10 +13,10 @@ class BlogController extends Controller
 {
     public function getAllBlog()
     {
-
-        $blog = Blog::with(['category' => function ($query) {
-            $query->select('id', 'name', 'slug');
-        }])->latest()->get();
+        $blog = Blog::with([
+            'category:id,name,slug',
+            'user:id,name'
+        ])->latest()->paginate(16);
 
         if ($blog->isEmpty()) {
             return response()->json([
@@ -156,16 +156,16 @@ class BlogController extends Controller
         ], 200);
     }
 
-    public function showDetail($id)
+    public function showDetail($slug)
     {
         $blog = Blog::with(['category' => function ($query) {
             $query->select('id', 'name', 'slug');
         }, 'user' => function ($query) {
             $query->select('id', 'name');
-        }])->findOrFail($id);
+        }])->where('slug', $slug)->first();
 
         return response()->json([
-            'blog' => $blog,
+            'data' => $blog,
             'message' => 'Blog retrieved successfully'
 
         ], 200);
