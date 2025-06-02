@@ -17,6 +17,7 @@ Route::middleware(['web'])->group(function () {
 
     Route::post('/auth/login', [AuthController::class, 'authenticate']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
+    Route::post('/auth/register', [AuthController::class, 'register']);
 
     Route::middleware(['auth:sanctum'])->prefix('dashboard')->group(function () {
         Route::get('/categories', [CategoryBlogController::class, 'getAllCategory'])->name('categories');

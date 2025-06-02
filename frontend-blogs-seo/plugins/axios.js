@@ -1,6 +1,7 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 
-export default defineNuxtPlugin (() => {
+export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig();
 
   const instance = axios.create({
@@ -9,6 +10,14 @@ export default defineNuxtPlugin (() => {
     headers: {
       Accept: "application/json",
     },
+  });
+  // Tambahkan interceptor untuk otomatis menyisipkan XSRF token
+  instance.interceptors.request.use((config) => {
+    const xsrfToken = Cookies.get("XSRF-TOKEN");
+    if (xsrfToken) {
+      config.headers["X-XSRF-TOKEN"] = xsrfToken;
+    }
+    return config;
   });
 
   return {

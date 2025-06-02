@@ -7,7 +7,7 @@ export default defineNuxtConfig({
   ssr: true,
   compatibilityDate: "2025-05-15",
   devtools: { enabled: true },
-  modules: ["@nuxt/ui", "@nuxt/image"],
+  modules: ["@nuxt/ui", "@nuxt/image", "nuxt-toast"],
   css: ["@/assets/css/main.css"],
   vite: {
     plugins: [
