@@ -7,8 +7,7 @@ definePageMeta({ layout: "auth-layout" });
 useSeoMeta({
   title: "Register | Nuxt 3",
 });
-
-const { register, loading, error } = useAuth();
+const auth = useAuthStore();
 
 // Validasi dan state register
 const schema = z.object({
@@ -17,21 +16,48 @@ const schema = z.object({
   password: z.string().min(6, "Password Minimal 6 Karakter"),
 }); // schema register
 const state = reactive({ name: "", email: "", password: "" });
-const toast = useToast(); // toast notification
+
+const toast = useToast();
 
 async function onSubmit(event) {
   event.preventDefault();
 
-  await register(event.data);
+  try {
+    const res = await auth.register(event.data);
 
-  state.name = "";
-  state.email = "";
-  state.password = "";
+    if (!res) {
+      toast.add({
+        title: "Register Gagal",
+        description: auth.error || "Terjadi kesalahan",
+        color: "red",
+        duration: 3000,
+        icon: "i-heroicons-x-circle",
+      });
+      return;
+    }
 
-  toast.success({
-    title: "Success!",
-    message: "Your action was completed successfully.",
-  });
+    // Jika sukses
+    toast.add({
+      title: "Sukses",
+      description: "Registrasi berhasil",
+      color: "green",
+      duration: 3000,
+      icon: "i-heroicons-check-circle",
+    });
+  } catch (err) {
+
+    toast.add({
+      title: "Terjadi kesalahan",
+      description:
+        err?.response?.data?.message || err.message || "Unknown error",
+      color: "red",
+      duration: 3000,
+    });
+  } finally {
+    state.name = "";
+    state.email = "";
+    state.password = "";
+  }
 }
 </script>
 
@@ -53,6 +79,7 @@ async function onSubmit(event) {
             showName
             linkText="Login"
             linkTo="/auth/login"
+            :loading="auth.loading"
           />
         </div>
       </div>

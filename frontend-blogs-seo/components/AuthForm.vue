@@ -1,4 +1,6 @@
 <script setup>
+import Loader from "./Loader.vue";
+
 defineProps({
   title: String,
   linkText: String,
@@ -7,6 +9,7 @@ defineProps({
   state: Object,
   onSubmit: Function,
   showName: Boolean,
+  loading: Boolean, // Tambahan ini
 });
 
 const emit = defineEmits(["submit"]);
@@ -29,18 +32,36 @@ const onSubmit = (event) => {
         @submit="onSubmit"
       >
         <UFormField v-if="showName" name="name" label="Full Name" size="lg">
-          <UInput class="w-full" placeholder="Nama Lengkap" v-model="state.name" />
+          <UInput
+            class="w-full"
+            placeholder="Nama Lengkap"
+            v-model="state.name"
+          />
         </UFormField>
 
         <UFormField name="email" label="Email" required size="lg">
-          <UInput class="w-full" placeholder="test@gmail.com" v-model="state.email"/>
+          <UInput
+            class="w-full"
+            placeholder="test@gmail.com"
+            v-model="state.email"
+          />
         </UFormField>
 
         <UFormField name="password" label="Password" required size="lg">
-          <UInput class="w-full" type="password" placeholder="********" v-model="state.password" />
+          <UInput
+            class="w-full"
+            type="password"
+            placeholder="********"
+            v-model="state.password"
+          />
         </UFormField>
 
-        <UButton type="submit" class="cursor-pointer">Submit</UButton>
+        <UButton type="submit" class="cursor-pointer" :disabled="loading">
+          <template #default>
+            <span v-if="!loading">Submit</span>
+            <Loader v-else size="w-4 h-4" color="text-slate-800 " />
+          </template>
+        </UButton>
       </UForm>
 
       <div class="my-4 flex justify-center">
@@ -52,5 +73,9 @@ const onSubmit = (event) => {
         </p>
       </div>
     </div>
+
+    <NuxtLink to="/" class="text-center text-[10px] text-primary hover:underline cursor-pointer"
+      >Back to Home</NuxtLink
+    >
   </div>
 </template>

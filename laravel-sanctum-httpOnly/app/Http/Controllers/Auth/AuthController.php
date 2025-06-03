@@ -25,9 +25,9 @@ class AuthController extends Controller
 
 
             if (!Auth::attempt($credentials)) {
-                throw ValidationException::withMessages([
-                    'email' => ['The provided credentials are incorrect.'],
-                ]);
+                return response()->json([
+                    'message' => 'Invalid credentials',
+                ], 401);
             };
 
 
@@ -38,7 +38,11 @@ class AuthController extends Controller
                 'user' => Auth::user(),
             ]);
         } catch (\Throwable $th) {
-            Log::error($th);
+            Log::error('Authentication error: ' . $th->getMessage());
+            return response()->json([
+                'message' => 'Login failed',
+                'error' => $th->getMessage(),
+            ], 500);
         }
     }
 
@@ -64,37 +68,32 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         try {
-            $request->validate([
+            $validated = $request->validate([
                 'name' => 'required|string',
-                'email' => 'required|email|unique:users',
+                'email' => 'required|email|unique:users,email',
                 'password' => 'required|string|min:6',
             ]);
 
-            if ($request->email) {
-                $user  = User::where('email', $request->email)->first();
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+            ]);
 
-                if ($user) {
-                    return throw ValidationException::withMessages([
-                        'email' => ['Email already exists'],
-                    ]);
-                }
-
-                $user = User::create([
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'password' => Hash::make($request->password),
-                ]);
-
-                return response()->json([
-                    'message' => 'Registration successful',
-                    'user' => $user,
-                ]);
-            }
+            return response()->json([
+                'message' => 'Registration successful',
+                'user' => $user,
+            ], 201);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $e->errors(),
+            ], 422);
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Registration failed',
                 'error' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 }

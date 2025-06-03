@@ -1,6 +1,7 @@
 <script setup>
 import ContainerPage from "~/components/ContainerPage.vue";
 import AuthForm from "~/components/AuthForm.vue";
+import { z } from "zod";
 
 definePageMeta({ layout: "auth-layout" });
 
@@ -8,13 +9,41 @@ useSeoMeta({
   title: "Login | Nuxt 3",
 });
 
+const auth = useAuthStore();
+
 // Validasi dan state login
-const schema = ref(); // schema login
+const schema = z.object({
+  email: z.string().email("Format Email Tidak Valid"),
+  password: z.string().min(6, "Password Minimal 6 Karakter"),
+});
 const state = ref({ email: "", password: "" });
 
-function onSubmit(event) {
-//  alert(event);
-}
+const toast = useToast();
+const onSubmit = async (event) => {
+  event.preventDefault();
+
+  const res = await auth.login(event.data);
+
+  if (!res) {
+    console.log("Login gagal, munculkan toast");
+    toast.add({
+      title: "Login Gagal",
+      description: auth.error || "Terjadi kesalahan",
+      color: "red",
+      duration: 3000,
+      icon: "i-heroicons-x-circle",
+    });
+
+    state.value.email = "";
+    state.value.password = "";
+    return;
+  }
+
+  state.value.email = "";
+  state.value.password = "";
+
+  navigateTo("/dashboard");
+};
 </script>
 
 <template>
@@ -35,6 +64,7 @@ function onSubmit(event) {
             :showName="false"
             linkText="Register"
             linkTo="/auth/register"
+            :loading="auth.loading"
           />
         </div>
       </div>

@@ -1,5 +1,8 @@
+<!-- layouts/dashboard.vue -->
 <template>
-  <slot />
+  <ClientOnly>
+    <slot />
+  </ClientOnly>
 </template>
 
 <script setup></script>
